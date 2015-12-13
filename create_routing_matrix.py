@@ -6,8 +6,8 @@
 import cplex
 
 ### DEFINITION OF DATA
-nb_stations = 17
-margin = 0.05
+nb_stations = 21
+margin = 0.02
 
 # Departures per day from stations
 dep = [0.689265537,2.336956522,2.819672131,3.726775956,5.532608696,3.516483516,
@@ -136,10 +136,6 @@ def setproblemdata(p):
   ''' OBJECTIVE '''
   quad_coef = [ (i,i,1.0) for i in range(nb_stations*nb_stations)]
   p.objective.set_quadratic_coefficients(quad_coef)
-  coef = p.objective.get_quadratic()
-  print coef 
-  p.objective.set_quadratic(coef)
-
 
 def setproblemdata1(p):
   p.objective.set_sense(p.objective.sense.maximize)
@@ -227,6 +223,16 @@ def qpex1():
     print "Column ", j, ":  ",
     print "Value = %10f " % p.solution.get_values(j), " -- ",
     print "Reduced Cost = %10f" % p.solution.get_reduced_costs(j) 
+
+  file_out = open("res.csv","w")
+  print "COEF MATRIX"
+  for i in range(nb_stations):
+    for j in range(nb_stations):
+      print  "%2f " % p.solution.get_values(nb_stations*i+j),
+      file_out.write(str(p.solution.get_values(nb_stations*i+j))+";")
+    print " "
+    file_out.write(";\n")
+
 
 qpex1()
 

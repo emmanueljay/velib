@@ -47,12 +47,12 @@ def setproblemdata(p):
   ''' VARIABLES '''
 
   ### Addition of variables
-  obj = [] ## Objects ? 
+  obj = [] ## 0bjective value ? 
   ub  = [] ## Upper bounds
   names = [] ## Names
   for i in range(nb_stations):
     for j in range(nb_stations):
-      obj.append(float((nb_stations)*i+j))
+      obj.append(0.0)
       if i!=j:
         ub.append(1.0)
       else:
@@ -134,8 +134,11 @@ def setproblemdata(p):
                               rhs = my_rhs, names = my_rownames)
 
   ''' OBJECTIVE '''
-  ## ??
-
+  quad_coef = [ (i,i,1.0) for i in range(nb_stations*nb_stations)]
+  p.objective.set_quadratic_coefficients(quad_coef)
+  coef = p.objective.get_quadratic()
+  print coef 
+  p.objective.set_quadratic(coef)
 
 
 def setproblemdata1(p):

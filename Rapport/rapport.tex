@@ -106,8 +106,23 @@ D'autre part, comme on a des proba de transition de $1$ depuis un chemin vers sa
 
 \section{Matrice de routage}
 
-
-
+Pour trouver la matrice de routage à partir des données, nous avons décidé d'utiliser l'artillerie lourde. Nous avons utilisé l'interface python de Cplex pour faire un script, qui, à partir des données, résoud un programme quadratique dont les variables sont les coefficients de la matrice de routage.
+On choisis de minimiser la somme des carrés des coefficients, afin que le résultat obtenu soit le plus équilibré possible (que depuis chaque station, on aille de façon équitable aux autres stations en fonction des contraintes)
+$$ 
+	\min \sum_{i,j} p_{i,j}^2
+$$
+Sous les contraintes de probabilité :
+$$
+	\sum_{j=1}^n p_{i,j} = 1 \qquad \forall i \in [|1,n|]
+$$
+De cohérence avec les données
+$$
+	\sum_{i=1}^n departure[i]*p_{i,j} = arrival[j] \qquad \forall j \in [|1,n|]
+$$
+Et du fait qu'on ne puisse pas revenir a une station
+$$
+	p_{i,i} = 1 \qquad \forall i \in [|1,n|]
+$$
 
 \section{\'Equations de trafic}
 

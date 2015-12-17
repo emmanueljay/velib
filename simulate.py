@@ -36,6 +36,62 @@ X0 = [20, 15, 17, 13, 18,
 print d
 
 
+n = 0
+
+''' Function that computes randomly the next step '''
+def next_step(X,t):
+  coef_stations_to_paths = []
+  coef_paths_to_stations = []
+  sum_coef = 0
+
+  ## Filling the coefficients vector
+  for i in range(n):
+    for j in range(n):
+      ## Filling the coefficients that represent going from one station to 
+      # the route starting from the station
+      if X[i] == 0:
+        coef_stations_to_paths[n*i+j] = 0
+      else:
+        coef_stations_to_paths[n*i+j] = d[i]*p[i][j]
+        sum_coef += d[i]*p[i][j]
+
+      ## Filling the coefficients that represent going out of one route to 
+      # the station at the end of the route
+      if X[j] == nmax[j]:
+        coef_paths_to_stations[n*i+j] = 0
+      else:
+        coef_paths_to_stations[n*i+j] = X[n + i*n + j] * mu[i][j]
+        sum_coef += X[n + i*n + j] * mu[i][j]
+
+  ## Getting when a change is made
+  time_to_action = np.random.exponential(sum_coef)
+
+  ## Getting the next state
+  proba = np.random.random()
+  inter_sum = 0
+  get_out = False
+  for i in range(n):
+    for j in range(n):
+      ## If the transition to one station to path is selected
+      if inter_sum + coef_stations_to_paths[n*i+j]/sum_coef >= proba:
+        X[i] -= 1 
+        X[n + i*n + j] += 1
+        get_out = True
+        break
+
+      inter_sum += coef_stations_to_paths[n*i+j]/sum_coef
+
+      ## If the transition to one path to one station is selected
+      if inter_sum + coef_paths_to_stations[n*i+j]/sum_coef >= proba:
+        X[j] += 1 
+        X[n + i*n + j] -= 1
+        get_out = True
+        break
+    if get_out:
+      break
+
+  ## return time
+  return t + time_to_action
 
 
 

@@ -10,12 +10,14 @@ nb_stations = 21
 margin = 0.02
 
 # Departures per day from stations
+# 
 dep = [0.689265537,2.336956522,2.819672131,3.726775956,5.532608696,3.516483516,
   4.586956522,1.934782609,1.734104046,1.358695652,1.532608696,1.245714286,
   2.456521739,1.804347826,1.479768786,3.6,1.111111111,0.710382514,
   1.2,1.065217391,1.326086957]
 
 # Arival per day in stations
+# 
 arr = [0.598870056,2.25,2.808743169,3.683060109,5.543478261,3.505494505,
   4.630434783,1.836956522,1.815028902,1.489130435,1.489130435,1.325714286,
   2.489130435,1.793478261,1.572254335,3.8,1.033333333,0.677595628,1.282352941,
@@ -136,65 +138,6 @@ def setproblemdata(p):
   ''' OBJECTIVE '''
   quad_coef = [ (i,i,1.0) for i in range(nb_stations*nb_stations)]
   p.objective.set_quadratic_coefficients(quad_coef)
-
-def setproblemdata1(p):
-  p.objective.set_sense(p.objective.sense.maximize)
-
-  p.linear_constraints.add(rhs = [20.0, 30.0], senses = "LL")
-
-  obj  = [1.0, 2.0, 3.0]
-  ub   = [40.0, cplex.infinity, cplex.infinity]
-  cols = [[[0,1],[-1.0, 1.0]],
-          [[0,1],[ 1.0,-3.0]],
-          [[0,1],[ 1.0, 1.0]]]
-  
-  p.variables.add(obj = obj, ub = ub, columns = cols,
-                  names = ["one", "two", "three"])
-
-  qmat = [[[0,1],[-33.0, 6.0]],
-          [[0,1,2],[ 6.0,-22.0, 11.5]],
-          [[1,2],[ 11.5, -11.0]]]
-
-
-  p.objective.set_quadratic(qmat)
-    
-
-
-# # data common to all populateby functions
-# my_obj      = [1.0, 2.0, 3.0]
-# my_ub       = [40.0, cplex.infinity, cplex.infinity]
-# my_colnames = ["x1", "x2", "x3"]
-# my_rhs      = [20.0, 30.0]
-# my_rownames = ["c1", "c2"]
-# my_sense    = "LL"
-
-
-# def populatebyrow(prob):
-#     prob.objective.set_sense(prob.objective.sense.maximize)
-
-#     # since lower bounds are all 0.0 (the default), lb is omitted here
-#     prob.variables.add(obj = my_obj, ub = my_ub, names = my_colnames)
-
-#     # can query variables like the following:
-
-#     # lbs is a list of all the lower bounds
-#     lbs = prob.variables.get_lower_bounds()
-
-#     # ub1 is just the first lower bound
-#     ub1 = prob.variables.get_upper_bounds(0) 
-
-#     # names is ["x1", "x3"]
-#     names = prob.variables.get_names([0, 2])
-
-#     rows = [[[0,"x2","x3"],[-1.0, 1.0,1.0]],
-#             [["x1",1,2],[ 1.0,-3.0,1.0]]]
-
-#     prob.linear_constraints.add(lin_expr = rows, senses = my_sense,
-#                                 rhs = my_rhs, names = my_rownames)
-
-#     # because there are two arguments, they are taken to specify a range
-#     # thus, cols is the entire constraint matrix as a list of column vectors
-#     cols = prob.variables.get_cols("x1", "x3")
 
 
 def qpex1():

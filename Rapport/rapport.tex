@@ -70,65 +70,66 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.6\linewidth]{img/modele.png}
-	\caption{Schéma tout pourri du modèle de base, où on a représenté que 2 nœuds/stations et les trajets les reliant. Les valeurs sur les arcs indiquent les probabilités de transition.}
+	\caption{Schéma succinct du modèle de base, où uniquement 2 nœuds/stations et les trajets les reliant sont représentés. Les valeurs sur les arcs indiquent les probabilités de transition.}
 	\label{fig:1}
 \end{figure}
 
-On a des nœuds $i$ qui correspondent aux stations et des nœuds $i\rightarrow j$, notés $(ij)$, qui correspondent au trajets entre les stations, $i$ et $j$ décrivant l'ensemble des stations.\\
+On intègre à notre modèle à la fois une représentation des stations vélib, et également des tous les trajets possibles entre ces stations. On a ainsi des nœuds $i$ qui correspondent aux stations et des nœuds $i\rightarrow j$, notés $(ij)$, qui correspondent au trajets entre les stations, $i$ et $j$ décrivant l'ensemble des stations, qui sera noté assez explicitement $stations$ et sera parfois assimilé à l'ensemble $[\![1,n]\!]$ en numérotant arbitrairement les stations.
 
-En reprenant les notations du papier "colony" :\\
-
-On note $T_{a,b}(n)$ l'opérateur de transition, avec $(a,b) \in \left\{ \left(i,(ij)\right), i,j \in stations \right\} \cup \left\{ \left((ij),j\right), i,j \in stations \right\}$.\\
+Les nœuds sont ici en fait des \textit{colonies} telle qu'elles sont décrites dans le chapitre 2.3 du livre de Kelly (ajouter ref). On reprendra dans toute la suite les notations développées par Kelly.\\
 
 
-Transition rates :
+On note dès lors $T_{a,b}(n)$ l'opérateur de transition, avec $(a,b) \in \left\{ \left(i,(ij)\right), i,j \in stations \right\} \cup \left\{ \left((ij),j\right), i,j \in stations \right\}$.
+\[
+T_{a,b}(n) = (...,n_a - 1,..., n_b + 1, ...)
+\]
+
+Les taux de transition sont écrits
 \[
 q\left(n, T_{a,b} (n) \right) = \lambda_{a,b} \phi_b(n_b)
 \]
-
 avec $\lambda_{a,b} = (proba\_transition\_a\_b) \times (temps\_service\_en\_a)$\\
 
 On note $\lambda_a = \sum_b \lambda_{a,b}$ le paramètre du temps de service en $a$.
-
-Lorsque $a = i$ est une stations, $\lambda_i$ correspond au taux de départ (horaire) de la station. Lorsque l'on considère un trajet $a = (ij)$, $\lambda_{(ij)})$ correspond au temps de trajet entre $i$ et $j$.\\
+Lorsque $a = i$ est une stations, $\lambda_i$ correspond au taux de départ (horaire) de la station. Lorsque l'on considère un trajet $a = (ij)$, $\lambda_{(ij)}$ correspond au temps de trajet entre $i$ et $j$.\\
 
 
 En notant $p_{ij}$ la probabilité d'emprunter le chemin vers $j$ depuis la stations $i$ (i.e. la proba de la transition $\left(i,(ij) \right)$), on a
-\[
+\begin{equation}
 \lambda_{i,(ij)} = p_{ij} \lambda_i
-\]
+\end{equation}
 
-D'autre part, comme on a des proba de transition de $1$ depuis un chemin vers sa destination, on a
-\[
+D'autre part, comme on a des probabilités de transition égales à $1$ depuis un chemin vers sa destination, on a
+\begin{equation}
 \lambda_{(ij),j} = \lambda_{(ij)}
-\]
+\end{equation}
 
 
 \section{Matrice de routage}
 
 Pour trouver la matrice de routage à partir des données, nous avons décidé d'utiliser l'artillerie lourde. Nous avons utilisé l'interface python de Cplex pour faire un script, qui, à partir des données, résoud un programme quadratique dont les variables sont les coefficients de la matrice de routage.
 On choisis de minimiser la somme des carrés des coefficients, afin que le résultat obtenu soit le plus équilibré possible (que depuis chaque station, on aille de façon équitable aux autres stations en fonction des contraintes)
-$$ 
+\[ 
 	\min \sum_{i,j} p_{i,j}^2
-$$
+\]
 Sous les contraintes de probabilité :
-$$
-	\sum_{j=1}^n p_{i,j} = 1 \qquad \forall i \in [|1,n|]
-$$
+\[
+	\sum_{j=1}^n p_{i,j} = 1 \qquad \forall i \in [\![1,n]\!]
+\]
 De cohérence avec les données
-$$
-	\sum_{i=1}^n departure[i]*p_{i,j} = arrival[j] \qquad \forall j \in [|1,n|]
-$$
+\[
+	\sum_{i=1}^n departure[i]*p_{i,j} = arrival[j] \qquad \forall j \in [\![1,n]\!]
+\]
 Et du fait qu'on ne puisse pas revenir a une station
-$$
-	p_{i,i} = 1 \qquad \forall i \in [|1,n|]
-$$
+\[
+	p_{i,i} = 1 \qquad \forall i \in [\![1,n]\!]
+\]
+
 
 \section{\'Equations de trafic}
 
-En reprenant les notations du papier "colony" :\\
 
-L'équation $(2.1)$ du papier, après avoir fait apparaître les probabilités de transition, devient pour notre problème
+L'équation de trafic $(2.1)$ du livre de Kelly, après avoir fait apparaître les probabilités de transition, devient pour notre problème, avec $(\alpha_a), a \in \left\{ i \in stations \right\} \cup \left\{ (ij), i,j \in stations \right\}$  la distribution à l'équilibre :
 \begin{equation}
 \alpha_{(ij)} \lambda_{(ij)} = \alpha_i p_{ij} \lambda_i
 \label{eq:trafic_1}
@@ -138,7 +139,7 @@ pour une transition à travers un chemin $(ij)$, et
 \alpha_j \sum_k p_{jk} \lambda_j = \sum_k \alpha_{(kj)} \lambda_{(kj)}
 \label{eq:trafic_2}
 \end{equation}
-pour une transition par une stations $j$.
+pour une transition par une station $j$.
 
 Comme $\sum_k p_{jk} = 1$, on a donc
 \begin{equation}
@@ -150,6 +151,7 @@ pour la transition par la station $j$.\\
 En injectant l'expression des $\alpha_{(ij)}$, on obtient
 \begin{equation}
 \alpha_j = \frac{1}{\lambda_j} \sum_i \alpha_i p_{ij} \lambda_i
+\label{eq:trafic_2_ter}
 \end{equation}
 
 
@@ -164,28 +166,33 @@ et
 i.e.
 \begin{equation}
 \sum_i \left(1 + \lambda_i \sum_j \frac{p_{ij}}{\lambda_{(ij)}} \right) \alpha_i = 1
+\label{eq:contrainte}
 \end{equation}
 
 ~\\
-Pour résoudre cette crotte, il suffit de résoudre
+Pour résoudre ces \textit{équations de trafic}, on réécrit l'équation (\ref{eq:trafic_2_ter}) sous forme matricielle
 \begin{equation}
 \alpha = \alpha P
 \end{equation}
 où $\alpha$ est le vecteur ligne des $\alpha_i, i \in stations$. Et $P$ est la matrice dont les coefficients sont donnés par $\left( p_{ij} \frac{\lambda_i}{\lambda_j} \right)_{i,j \in stations}$.\\
 
-Pour ce faire, il suffit d'inverser la matrice $(I-P)$ dans laquelle on a remplacé une colonne par le vecteur formés par $\left(1 + \lambda_i \sum_j \frac{p_{ij}}{\lambda_{(ij)}} \right)_{i \in stations}$, et on utilisant un second membre nul, sauf pour la colonne correspondant à celle modifiée qui doit comporter un $1$.
+La résolution de ce système doit ensuite être menée en tenant compte de la contrainte (\ref{eq:contrainte}). Pour ce faire, il suffit d'inverser la matrice $(I-P)$ dans laquelle on a remplacé une colonne par le vecteur formés par $\left(1 + \lambda_i \sum_j \frac{p_{ij}}{\lambda_{(ij)}} \right)_{i \in stations}$, et on utilisant un second membre nul, sauf pour la colonne correspondant à celle modifiée qui doit comporter un $1$.
  
-On calculera ainsi les $\alpha_i$, d'où découlerons ensuite les $\alpha_{(ij)}$ (si tant est qu'ils nous intéressent) grâce à l'équation (\ref{eq:trafic_1}).
+On calculera ainsi les $\alpha_i$, d'où découlerons ensuite les $\alpha_{(ij)}$ (si tant est qu'ils nous intéressent) grâce à l'équation (\ref{eq:trafic_1}).\\
+
+Les solutions des équations de trafic nous permettent ensuite de calculer la distribution stationnaire d'un processus migratoire basé sur notre modèle (en accord avec le théorème 2.4 du livre de Kelly).
 
 
 
 \section{Remarques}
 
-C'est peut être du gros caca.
+Le jeu de données fournit ne propose aucune information nous permettant d'estimer les temps de service (i.e. les temps de trajets pour les nœuds de trajet et le taux horaire de départ pour les nœuds de station). On ne peut donc mener les calculs à leur terme pour l'instant.
 
-Quoi qu'il en soit, dans le premier jeu de données qu'il a fournit, il n'y rien qui nous permette de calculer les temps de service (i.e. les temps de trajets pour les nœuds de trajet et le taux horaire de départ pour les nœuds de station). Il donne néanmoins ces temps dans le deuxième jeu de données, où j'avais vu un exemple de matrice de routage. C'est donc bien que ça doit servir.
-
-Il serait étonnant que les équations de trafic ne fassent pas intervenir les temps de service, donc même dans le cas où ce que j'ai fait ici est incorrect, on est coincé pour la résolution.
+%C'est peut être du gros caca.
+%
+%Quoi qu'il en soit, dans le premier jeu de données qu'il a fournit, il n'y rien qui nous permette de calculer les temps de service (i.e. les temps de trajets pour les nœuds de trajet et le taux horaire de départ pour les nœuds de station). Il donne néanmoins ces temps dans le deuxième jeu de données, où j'avais vu un exemple de matrice de routage. C'est donc bien que ça doit servir.
+%
+%Il serait étonnant que les équations de trafic ne fassent pas intervenir les temps de service, donc même dans le cas où ce que j'ai fait ici est incorrect, on est coincé pour la résolution.
 
 
 

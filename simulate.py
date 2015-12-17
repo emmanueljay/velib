@@ -6,3 +6,15 @@
 
 import numpy as np
 print np.random.exponential(2)
+
+
+p = []     # [n][n]
+d = []     # [n]
+mu = []    # [n][n]
+nmax = []  # [n]
+X0 = []    # [n(n+1)]
+
+
+
+
+

@@ -93,11 +93,40 @@ def next_step(X,t):
   ## return time
   return t + time_to_action
 
-X = X0
-print X
-t = 0
-for w in range(100):
-  t = next_step(X,t)
-print X
+
+Z=[]
+nb_itt=10000
+# Nombre d'itterations dans un temps inferieur a celui voulu, ici 10 :
+for i in range(nb_itt):
+  t = 0
+  X=X0
+  while t<10:
+    # print t
+    t = next_step(X,t)
+  Y=list(X)
+  # print Y
+  Z.append(Y)
+
+
+
+# Impression des itterations
+# print "/////////////////////////"
+# print Z
+
+# Moyenne sur les itterations
+W=list(Z[1])
+for j in range(1,len(Z)):
+  for i in range(len(Z[1])):
+    W[i]=W[i]+Z[j][i]
+# print "/////////////////////////"
+# print W
+print "/////////////////////////"
+def div_size_Z(x) : return x/(len(Z))
+W=map(div_size_Z,W)
+print W
+
+for i in range(0,5):
+  print "Places restantes dans la station ",i+1," sur une moyenne de ",nb_itt," itterations : ",nmax[i]-W[i]
+
 
 

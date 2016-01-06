@@ -95,7 +95,7 @@ def next_step(X,t):
 
 
 Z=[]
-nb_itt=10000
+nb_itt=18345
 # Nombre d'itterations dans un temps inferieur a celui voulu, ici 10 :
 for i in range(nb_itt):
   t = 0
@@ -126,7 +126,7 @@ W=map(div_size_Z,W)
 print W
 
 for i in range(0,5):
-  print "Places restantes dans la station ",i+1," sur une moyenne de ",nb_itt," itterations : ",nmax[i]-W[i]
+  print "Places restantes dans la station ",i+1," sur une moyenne de ",nb_itt," iterations : ",nmax[i]-W[i]
 
 
 

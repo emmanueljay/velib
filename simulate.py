@@ -95,7 +95,17 @@ def next_step(X,t):
 
 
 Z=[]
-nb_itt=18345
+
+## Vecteur de station
+station_etat = {}
+for station in range(n):
+  station_etat[station] = []  
+
+station_mean = {}
+for station in range(n):
+  station_mean[station] = 0
+
+nb_itt=100000
 # Nombre d'itterations dans un temps inferieur a celui voulu, ici 10 :
 for i in range(nb_itt):
   t = 0
@@ -103,14 +113,24 @@ for i in range(nb_itt):
   while t<10:
     # print t
     t = next_step(X,t)
+
+  for station in range(n):
+    station_etat[station].append(X[station])
+    station_mean[station] += X[station]
+
   Y=list(X)
   # print Y
   Z.append(Y)
 
 
+for station in range(n):
+  station_mean[station] = float(station_mean[station]) / nb_itt
+  print "Places restantes dnas la station ", station+1, " sont de ", nmax[station]-station_mean[station]
+
+
 
 # Impression des itterations
-# print "/////////////////////////"
+print "/////////////////////////"
 # print Z
 
 # Moyenne sur les itterations
@@ -118,9 +138,6 @@ W=list(Z[1])
 for j in range(1,len(Z)):
   for i in range(len(Z[1])):
     W[i]=W[i]+Z[j][i]
-# print "/////////////////////////"
-# print W
-print "/////////////////////////"
 def div_size_Z(x) : return x/(len(Z))
 W=map(div_size_Z,W)
 print W
@@ -128,5 +145,12 @@ print W
 for i in range(0,5):
   print "Places restantes dans la station ",i+1," sur une moyenne de ",nb_itt," iterations : ",nmax[i]-W[i]
 
+print "\n/////////////////////////\n"
+
+
+moyenne_stations = {}
+for station in range(n):
+  moyenne_stations[station] = np.mean(station_etat[station])
+  print "Places restantes dnas la station ", station+1, " sont de ", nmax[station]-moyenne_stations[station]
 
 

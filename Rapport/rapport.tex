@@ -183,16 +183,27 @@ Les solutions des équations de trafic nous permettent ensuite de calculer la di
 
 
 
-\section{Remarques}
+\section{Modèle du Système}
 
-Le jeu de données fournit ne propose aucune information nous permettant d'estimer les temps de service (i.e. les temps de trajets pour les nœuds de trajet et le taux horaire de départ pour les nœuds de station). On ne peut donc mener les calculs à leur terme pour l'instant.
+Nous ponvons donc modéliser notre problème de stations avec les coefficients suivants, pour $i,j$ des stations différentes et $ij$ représentant le chemin entre $i$ et $j$:
 
-%C'est peut être du gros caca.
-%
-%Quoi qu'il en soit, dans le premier jeu de données qu'il a fournit, il n'y rien qui nous permette de calculer les temps de service (i.e. les temps de trajets pour les nœuds de trajet et le taux horaire de départ pour les nœuds de station). Il donne néanmoins ces temps dans le deuxième jeu de données, où j'avais vu un exemple de matrice de routage. C'est donc bien que ça doit servir.
-%
-%Il serait étonnant que les équations de trafic ne fassent pas intervenir les temps de service, donc même dans le cas où ce que j'ai fait ici est incorrect, on est coincé pour la résolution.
+\paragraph*{}
+Coefficients du générateur infinitésimal pour une transition entre une station, et un chemin de cette station vers une autre:
+$$
+q(n, T_{i,ij} (n)) = p_{i,j} * min(1,n_i)
+$$
 
+\paragraph*{}
+Coefficients du générateur infinitésimal pour une transition entre un chemin et la station d'arrivée :
+$$
+q(n, T_{ij,j} (n)) = \mu_{i,j} * n_{ij} \;\;\; if(n_j != n^{max}_j)
+$$
+$$
+q(n, T_{ij,j} (n)) = 0 \;\;\; if(n_j == n^{max}_j)
+$$
+
+\paragraph*{}
+Le reste des coefficients du générateur infinitésimal est nul
 
 
 \end{document}

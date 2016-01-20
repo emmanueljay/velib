@@ -3,6 +3,12 @@
 #   tableau = )log(np.random.rand(10**n,]))
 #   ml = pylab
 
+import sys
+if len(sys.argv) < 2:
+  print "Vous pouvez passer en paramatre le nombre d'iterations de la simulation. Par defaut, 10000"
+  nb_itt = 10000
+else :
+  nb_itt = int(sys.argv[1])
 
 import numpy as np
 
@@ -105,9 +111,11 @@ station_mean = {}
 for station in range(n):
   station_mean[station] = 0
 
-nb_itt=100000
 # Nombre d'itterations dans un temps inferieur a celui voulu, ici 10 :
+print "Launching ",nb_itt," simulations of the Markov chain of 10 minutes"
+
 for i in range(nb_itt):
+  if (i%(nb_itt/10) == 0): print i*100/nb_itt,"%  done"
   t = 0
   X=X0
   while t<10:
@@ -123,15 +131,53 @@ for i in range(nb_itt):
   Z.append(Y)
 
 
+print "\n/////////////////////////"
+print "MOYENNE DES PLACES DISPONIBLES\n"
+
 for station in range(n):
   station_mean[station] = float(station_mean[station]) / nb_itt
   print "Places restantes dnas la station ", station+1, " sont de ", nmax[station]-station_mean[station]
 
 
+print "\n/////////////////////////"
+print "PROBABILITEES DE BLOCAGE\n"
 
-# Impression des itterations
-print "/////////////////////////"
-# print Z
+proba_blocage = {}
+for station in range(n):
+  proba_blocage[station] = 0.0
+  for etat in station_etat[station]:
+    if (etat == nmax[station]):
+      proba_blocage[station] += 1.0
+  proba_blocage[station] /= nb_itt
+  print "La probabilite de blocage pour la station ", station+1, " est ", proba_blocage[station]
+
+print "\n/////////////////////////"
+print "INTERVALES DE CONFIANCE POUR LES PROBABILITEES DE BLOCAGE A 95%\n"
+
+alpha = 0.95
+beta = 1.96
+
+# Calcul de la variance empirique, et des intervales de confiance
+variance_empirique = {}
+for station in range(n):
+  variance_empirique[station] = 0.0
+  for etat in station_etat[station]:
+    if (etat == nmax[station]):
+      variance_empirique[station] += (1.0-proba_blocage[station])*(1.0-proba_blocage[station])
+    else:
+      variance_empirique[station] += proba_blocage[station]*proba_blocage[station]
+    variance_empirique[station] /= nb_itt-1   
+    variance_empirique[station] = np.sqrt(variance_empirique[station])
+
+  ## Affichage des intervales de confiance
+  borne_inf = proba_blocage[station] - beta*variance_empirique[station]/np.sqrt(nb_itt)
+  borne_sup = proba_blocage[station] + beta*variance_empirique[station]/np.sqrt(nb_itt)
+  print "Variance empirique = ", variance_empirique[station]
+  print "L'intervalle de confiance de la proba de blocage a 95\% pour la station ",
+  print station+1, " est [", max(0.0,borne_inf),",",min(1.0,borne_sup),"]"
+
+print "\n/////////////////////////"
+print "\n/////////////////////////\n"
 
 # Moyenne sur les itterations
 W=list(Z[1])

@@ -136,7 +136,7 @@ print "MOYENNE DES PLACES DISPONIBLES\n"
 
 for station in range(n):
   station_mean[station] = float(station_mean[station]) / nb_itt
-  print "Places restantes dnas la station ", station+1, " sont de ", nmax[station]-station_mean[station]
+  print "Places restantes dans la station ", station+1, " sont de ", nmax[station]-station_mean[station]
 
 
 print "\n/////////////////////////"
@@ -173,7 +173,7 @@ for station in range(n):
   borne_inf = proba_blocage[station] - beta*variance_empirique[station]/np.sqrt(nb_itt)
   borne_sup = proba_blocage[station] + beta*variance_empirique[station]/np.sqrt(nb_itt)
   print "Variance empirique = ", variance_empirique[station]
-  print "L'intervalle de confiance de la proba de blocage a 95\% pour la station ",
+  print "L'intervalle de confiance de la proba de blocage a 95%  pour la station ",
   print station+1, " est [", max(0.0,borne_inf),",",min(1.0,borne_sup),"]"
 
 print "\n/////////////////////////"

@@ -1,0 +1,43 @@
+Launching  1000000  simulations of the Markov chain of 10 minutes
+0 %  done
+10 %  done
+20 %  done
+30 %  done
+40 %  done
+50 %  done
+60 %  done
+70 %  done
+80 %  done
+90 %  done
+
+/////////////////////////
+MOYENNE DES PLACES DISPONIBLES
+
+Places restantes dans la station  1  sont de  0.145432
+Places restantes dans la station  2  sont de  12.834198
+Places restantes dans la station  3  sont de  16.556604
+Places restantes dans la station  4  sont de  8.333522
+Places restantes dans la station  5  sont de  11.05827
+
+/////////////////////////
+PROBABILITEES DE BLOCAGE
+
+La probabilite de blocage pour la station  1  est  0.958236
+La probabilite de blocage pour la station  2  est  0.084889
+La probabilite de blocage pour la station  3  est  0.005935
+La probabilite de blocage pour la station  4  est  0.164453
+La probabilite de blocage pour la station  5  est  0.161405
+
+/////////////////////////
+INTERVALES DE CONFIANCE POUR LES PROBABILITEES DE BLOCAGE A 95%
+
+Variance empirique =  4.23818239244e-05
+L'intervalle de confiance de la proba de blocage a 95%  pour la station  1  est [ 0.958235916932 , 0.958236083068 ]
+Variance empirique =  8.53905154451e-05
+L'intervalle de confiance de la proba de blocage a 95%  pour la station  2  est [ 0.0848888326346 , 0.0848891673654 ]
+Variance empirique =  6.4560277602e-06
+L'intervalle de confiance de la proba de blocage a 95%  pour la station  3  est [ 0.00593498734619 , 0.00593501265381 ]
+Variance empirique =  0.000164953842822
+L'intervalle de confiance de la proba de blocage a 95%  pour la station  4  est [ 0.16445267669 , 0.16445332331 ]
+Variance empirique =  0.000161905855651
+L'intervalle de confiance de la proba de blocage a 95%  pour la station  5  est [ 0.161404682665 , 0.161405317335 ]
